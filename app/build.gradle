@@ -1,0 +1,52 @@
+// ==================== app 模块构建脚本 ====================
+plugins {
+    id 'com.android.application'
+}
+
+// ---- 读取签名配置（signing.properties 不入库，安全）----
+def signingProps = new Properties()
+def signingFile = rootProject.file('signing.properties')
+if (signingFile.exists()) {
+    signingFile.withInputStream { signingProps.load(it) }
+}
+
+android {
+    namespace 'com.example.siriassistant'
+    compileSdk 33
+
+    defaultConfig {
+        applicationId "com.example.siriassistant"
+        minSdk 21
+        targetSdk 33
+        versionCode 1
+        versionName "1.0"
+    }
+
+    // ---- 正式签名配置（发布 APK 必须）----
+    signingConfigs {
+        release {
+            if (signingProps.containsKey('storeFile')) {
+                storeFile rootProject.file(signingProps['storeFile'])
+                storePassword signingProps['storePassword']
+                keyAlias signingProps['keyAlias']
+                keyPassword signingProps['keyPassword']
+            }
+        }
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            signingConfig signingConfigs.release
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+}
+
+// 纯原生 Android 实现，无需任何第三方依赖
+dependencies {
+}

@@ -1,0 +1,18 @@
+// 项目设置：仓库地址（google() 与 mavenCentral() 为 AGP 依赖源）
+pluginManagement {
+    repositories {
+        google()
+        mavenCentral()
+        gradlePluginPortal()
+    }
+}
+dependencyResolutionManagement {
+    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
+    repositories {
+        google()
+        mavenCentral()
+    }
+}
+
+rootProject.name = "SiriAssistant"
+include ':app'
