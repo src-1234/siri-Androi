@@ -1,67 +1,59 @@
-# SiriAssistant-Android
+# Siri 安卓助手 (Siri Assistant)
 
-Siri 风格语音助手安卓版（个人学习作品，非苹果官方产品）
+一个复刻 Siri 界面设计的安卓语音助手应用。
 
-点击彩色球体说话，支持语音识别、关键词应答、中文朗读（TTS），还会报时、算数、讲笑话。
+## 应用图标
+
+图标直接取自参考图中的 Siri 光球（蓝绿→深蓝渐变背景 + 彩色漩涡光球 + 白色描边）。
+
+## 主界面（复刻参考设计）
+
+- 蓝绿 → 深蓝垂直渐变背景（取色自参考图：#1A84B8 → #123072）
+- 顶部 "Hey, Siri" 白色粗体标题
+- 中央 Siri 光球（带呼吸动画）
+- 底部液态玻璃药丸形输入框："Ask Siri" 为水印，输入内容后自动消失；无内容时点发送无效
+- 蓝色圆形渐变发送按钮 + 白色纸飞机图标
 
 ## 功能
 
-- 🎙️ 语音识别：调用系统语音识别（需录音权限，无识别服务时自动转为手动输入）
-- 💬 智能应答：问候、报时、日期、天气提示、冷笑话、打开相机/设置、简单四则运算
-- 🔊 中文朗读：TextToSpeech 语音播报回答
-- 🌈 Siri 风格界面：多彩渐变球体 + 语音波形动画，深色沉浸式主题
-- 📦 零第三方依赖：纯原生 Java 实现，APK 体积小
+### 语音输入
+点击主界面 Siri 光球 → 启动麦克风语音识别（需授予麦克风权限），识别结果自动传送到输入框。
 
-## 技术栈
+### 快捷指令（系统插件）
+对话界面不显示任何快捷指令入口。在输入框输入「**启动快捷指令**」可查看/激活指令，支持：
 
-| 项目 | 版本 |
-| ---- | ---- |
-| Java | 8+（构建环境需 JDK 11） |
-| Gradle | 7.5 |
-| Android Gradle Plugin | 7.4.2 |
-| compileSdk / targetSdk | 33 |
-| minSdk | 21（Android 5.0+） |
+| 指令示例 | 功能 |
+| --- | --- |
+| 打开应用 微信 / 打开 QQ | 按名称查找并启动应用 |
+| 查天气 | 打开天气应用（无则打开天气搜索） |
+| 定时 10 分钟 / 倒计时 30秒 | 设置系统定时器 |
+| 闹钟 7点 | 设置系统闹钟 |
+| 打电话 10086 | 拨号盘 |
+| 搜索 今晚吃什么 | 网页搜索 |
+| 打开网址 baidu.com | 打开浏览器 |
+| 拍照 / 打开相机 | 相机 |
+| 蓝牙 / WiFi / 打开设置 | 系统设置页 |
 
-## 快速构建（生成签名 APK）
+### 对话
+内置离线对话引擎：时间、日期、问候、笑话、闲聊等。
+
+## 安装
+
+从 [Releases](../../releases) 页面下载 `SiriAssistant.apk`，在手机上允许"安装未知来源应用"后安装。
+
+- 最低系统：Android 7.0 (API 24)
+- 目标系统：Android 14 (API 34)
+- 版本：1.0 (1)
+
+## 构建
+
+项目为纯 Java 无第三方依赖，可用 Android SDK 手动构建：
 
 ```bash
-# 1. 生成签名密钥（只需一次，会生成 keystore/ 与 signing.properties）
-bash scripts/gen_keystore.sh
-
-# 2. 构建正式版 APK（产物：app/build/outputs/apk/release/app-release.apk）
-gradle assembleRelease
+./build.sh   # 需要 JDK 17+、Android SDK (build-tools 35.0.0、platform-34)
 ```
 
-详细图文步骤见 [BUILD_GUIDE.md](BUILD_GUIDE.md)。
+## 权限说明
 
-## 项目结构
-
-```
-SiriAssistant-Android/
-├── app/
-│   ├── build.gradle          # 模块构建脚本（含签名配置）
-│   └── src/main/
-│       ├── AndroidManifest.xml
-│       ├── java/com/example/siriassistant/
-│       │   ├── MainActivity.java      # 主逻辑：识别→应答→朗读
-│       │   ├── SiriButtonView.java    # 多彩球体按钮（自绘）
-│       │   └── WaveView.java          # 语音波形动画（自绘）
-│       └── res/                        # 布局 / 主题 / 图标
-├── scripts/
-│   ├── gen_keystore.sh               # 一键生成签名密钥
-│   └── github_release.sh             # 一键发布 APK 到 GitHub Release
-├── settings.gradle
-├── build.gradle
-├── BUILD_GUIDE.md                     # 完整编译 + 发布教程
-└── README.md
-```
-
-## 安装说明
-
-- APK 必须**签名**才能安装（本项目的正式 APK 已签名）
-- 手机需开启「允许安装未知来源应用」
-- Android 5.0（API 21）及以上
-
-## 声明
-
-本项目为个人学习 / 演示用途，不包含任何苹果官方代码、商标或素材。
+- `RECORD_AUDIO`：语音输入（点击光球时按需动态申请）
+- `SET_ALARM`：定时器 / 闹钟快捷指令

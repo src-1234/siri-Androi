@@ -1,4 +1,0 @@
-// 根构建脚本：声明 Android Gradle Plugin 版本（Java 11 环境兼容 AGP 7.x）
-plugins {
-    id 'com.android.application' version '7.4.2' apply false
-}
