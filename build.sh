@@ -18,7 +18,7 @@ echo "[1/6] aapt2 compile + link"
   -I "$PLATFORM" \
   --java "$BUILD/gen" \
   --min-sdk-version 24 --target-sdk-version 34 \
-  --version-code 1 --version-name 1.0 \
+  --version-code 2 --version-name 1.1 \
   "$BUILD/res.zip"
 
 echo "[2/6] javac"

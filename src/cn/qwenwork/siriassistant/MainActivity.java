@@ -61,6 +61,45 @@ public class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
         assistant = new Assistant(this);
         buildUi();
+        handleWakeIntent(getIntent()); // 唤醒插件拉起时自动发送
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        handleWakeIntent(intent); // 已在运行时被唤醒
+    }
+
+    /** 处理唤醒插件传来的语音文本：填入输入框并自动发送，回答显示在主页面。 */
+    private void handleWakeIntent(Intent intent) {
+        if (intent == null) return;
+        String q = intent.getStringExtra("wake_query");
+        if (q == null || q.trim().isEmpty()) return;
+        String cleaned = stripWakeWord(q);
+        input.setText(cleaned.isEmpty() ? "你好" : cleaned);
+        input.setSelection(input.getText().length());
+        sendMessage();
+    }
+
+    /** 去掉唤醒词前缀（嘿/嗨/hi/hey/你好 + Siri）。 */
+    private String stripWakeWord(String s) {
+        String t = s.trim();
+        String low = t.toLowerCase(Locale.ROOT);
+        String[] prefixes = {"hey siri", "hi siri", "嗨 siri", "嘿 siri",
+                             "嗨siri", "嘿siri", "你好 siri", "你好siri", "siri"};
+        boolean changed = true;
+        while (changed) {
+            changed = false;
+            for (String p : prefixes) {
+                if (low.startsWith(p)) {
+                    t = t.substring(p.length()).trim();
+                    low = t.toLowerCase(Locale.ROOT);
+                    changed = true;
+                    break;
+                }
+            }
+        }
+        return t.replace("，", "").replace(",", "").replace("。", "").trim();
     }
 
     // ---------------- UI ----------------

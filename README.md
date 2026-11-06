@@ -1,6 +1,11 @@
 # Siri 安卓助手 (Siri Assistant)
 
-一个复刻 Siri 界面设计的安卓语音助手应用。
+一个复刻 Siri 界面设计的安卓语音助手应用，搭配一个常驻后台的「嘿 Siri」唤醒插件。
+
+仓库结构：
+
+- 根目录：Siri 助手主应用（SiriAssistant.apk）
+- `wake-plugin/`：Siri 唤醒插件（SiriWake.apk）
 
 ## 应用图标
 
@@ -37,23 +42,44 @@
 ### 对话
 内置离线对话引擎：时间、日期、问候、笑话、闲聊等。
 
+## 唤醒插件（wake-plugin/，SiriWake.apk）
+
+一个很小的独立插件，常驻后台值守：
+
+1. 打开「Siri 唤醒」→ 授予麦克风权限 → 点击「开始聆听」
+2. 前台服务（低优先级常驻通知）持续聆听，对手机说「**嘿 Siri**」（或 "Hi Siri"，唤醒词后可直接跟指令，如「嘿 Siri 打开微信」）
+3. 检测到唤醒词后自动打开 Siri 助手主应用，语音文本填入主页面输入框并自动发送，回答直接显示在主页面（打开应用）
+4. 主应用使用麦克风期间插件自动避让，之后自动恢复值守；通知栏点「停止值守」可随时关闭
+
+需与主应用同时安装使用（主应用需 v1.1 及以上）。
+
 ## 安装
 
-从 [Releases](../../releases) 页面下载 `SiriAssistant.apk`，在手机上允许"安装未知来源应用"后安装。
+从 [Releases](../../releases) 页面下载 `SiriAssistant.apk` 与 `SiriWake.apk`，在手机上允许"安装未知来源应用"后安装。
 
 - 最低系统：Android 7.0 (API 24)
 - 目标系统：Android 14 (API 34)
-- 版本：1.0 (1)
+- 主应用版本：1.1 (2)；唤醒插件版本：1.0 (1)
 
 ## 构建
 
 项目为纯 Java 无第三方依赖，可用 Android SDK 手动构建：
 
 ```bash
-./build.sh   # 需要 JDK 17+、Android SDK (build-tools 35.0.0、platform-34)
+./build.sh                  # 主应用 SiriAssistant.apk
+./wake-plugin/build.sh      # 唤醒插件 SiriWake.apk
+# 需要 JDK 17+、Android SDK (build-tools 35.0.0、platform-34)
 ```
 
 ## 权限说明
 
+主应用：
+
 - `RECORD_AUDIO`：语音输入（点击光球时按需动态申请）
 - `SET_ALARM`：定时器 / 闹钟快捷指令
+
+唤醒插件：
+
+- `RECORD_AUDIO`：后台聆听唤醒词
+- `FOREGROUND_SERVICE` / `FOREGROUND_SERVICE_MICROPHONE`：常驻值守服务
+- `POST_NOTIFICATIONS`：值守通知（Android 13+）
